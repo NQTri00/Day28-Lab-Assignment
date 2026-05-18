@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+httpx
+prometheus-fastapi-instrumentator
+langsmith
