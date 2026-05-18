@@ -1,4 +1,3 @@
-# scripts/production_readiness_check.py
 import requests, redis, subprocess
 
 results = {}
@@ -27,36 +26,37 @@ check("Metrics endpoint exposed", lambda:
     requests.get("http://localhost:8000/metrics").raise_for_status())
 
 print("\n=== SECURITY ===")
-def check_unauthorized():
-    r = requests.get("http://localhost:8000/admin")
-    assert r.status_code in [401, 403, 404]
+def assert_status(code, allowed):
+    if code not in allowed:
+        raise Exception(f"Status {code} not in {allowed}")
 
-check("Unauthorized request rejected", check_unauthorized)
+check("Unauthorized request rejected", lambda: (
+    r := requests.get("http://localhost:8000/admin"),
+    assert_status(r.status_code, [401, 403, 404])
+))
 
 print("\n=== VECTOR STORE ===")
 check("Qdrant healthy", lambda:
     requests.get("http://localhost:6333/healthz").raise_for_status())
-
-def check_collection_exists():
-    r = requests.get("http://localhost:6333/collections/documents")
+check("Collection exists", lambda: (
+    r := requests.get("http://localhost:6333/collections/documents"),
     r.raise_for_status()
-
-check("Collection exists", check_collection_exists)
+))
 
 print("\n=== FEATURE STORE ===")
 check("Redis reachable", lambda:
     redis.Redis(host="localhost", port=6379).ping())
 
 print("\n=== KAFKA ===")
-def check_kafka_topics():
+def check_kafka():
     result = subprocess.run(
-        ["docker", "exec", "lab28-kafka-1", "kafka-topics", "--list",
+        ["docker", "exec", "day28-lab-assignment-kafka-1", "kafka-topics", "--list",
          "--bootstrap-server", "localhost:9092"],
         capture_output=True, text=True
     )
-    assert "data.raw" in result.stdout
-
-check("Kafka topics exist", check_kafka_topics)
+    if "data.raw" not in result.stdout:
+        raise Exception("data.raw topic not found")
+check("Kafka topics exist", check_kafka)
 
 # Tổng kết
 passed = sum(1 for v in results.values() if v == "PASS")

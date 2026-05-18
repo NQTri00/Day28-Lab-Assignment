@@ -1,4 +1,3 @@
-# scripts/03_delta_to_feast.py
 import pandas as pd
 import glob, os, redis, json
 
@@ -22,6 +21,7 @@ def load_from_delta_and_push_feast():
             "processed": True
         }))
 
-    print(f"Integration 3+4 OK: Delta Lake → Feast (Redis) — {len(df)} features stored")
+    print(f"Integration 3+4 OK: Delta Lake -> Feast (Redis) -- {len(df)} features stored")
 
-load_from_delta_and_push_feast()
+if __name__ == "__main__":
+    load_from_delta_and_push_feast()

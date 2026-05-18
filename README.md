@@ -121,13 +121,13 @@ Kỳ vọng: Score >80%
 
 ## Scripts
 
-| Script | Mô tả |
-|--------|-------|
-| `scripts/01_ingest_to_kafka.py` | Ingest sample data vào Kafka |
-| `scripts/03_delta_to_feast.py` | Load từ Delta Lake và push features vào Feast (Redis) |
-| `scripts/05_embed_to_qdrant.py` | Embed data và lưu vectors vào Qdrant |
-| `scripts/09_verify_observability.py` | Kiểm tra Prometheus metrics và LangSmith traces |
-| `scripts/production_readiness_check.py` | Production readiness checklist |
+| Script                                  | Mô tả                                                 |
+| --------------------------------------- | ----------------------------------------------------- |
+| `scripts/01_ingest_to_kafka.py`         | Ingest sample data vào Kafka                          |
+| `scripts/03_delta_to_feast.py`          | Load từ Delta Lake và push features vào Feast (Redis) |
+| `scripts/05_embed_to_qdrant.py`         | Embed data và lưu vectors vào Qdrant                  |
+| `scripts/09_verify_observability.py`    | Kiểm tra Prometheus metrics và LangSmith traces       |
+| `scripts/production_readiness_check.py` | Production readiness checklist                        |
 
 ## API Gateway
 
