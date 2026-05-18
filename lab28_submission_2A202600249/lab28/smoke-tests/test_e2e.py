@@ -6,21 +6,16 @@ VLLM_URL = os.environ.get("VLLM_NGROK_URL", "")
 # ── Test 1: Happy Path — Full Inference Request ───────────────
 class TestHappyPath:
     def test_full_inference_returns_200(self):
-        """Data vào API Gateway, nhận được answer từ LLM (503 accepted if Kaggle is offline)"""
+        """Data vào API Gateway, nhận được answer từ LLM"""
         resp = requests.post(f"{BASE_URL}/api/v1/chat", json={
             "query": "What is platform engineering?",
             "embedding": [0.1] * 384
         }, timeout=30)
-        # 503 is acceptable when Kaggle vLLM service is not running
-        assert resp.status_code in [200, 503], f"Unexpected status: {resp.status_code}"
-        if resp.status_code == 200:
-            data = resp.json()
-            assert "answer" in data
-            assert len(data["answer"]) > 10
-            assert data["latency_ms"] < 10000
-        else:
-            # vLLM offline — still validates gateway handles it gracefully
-            assert "detail" in resp.json()
+        assert resp.status_code == 200
+        data = resp.json()
+        assert "answer" in data
+        assert len(data["answer"]) > 10
+        assert data["latency_ms"] < 10000
 
     def test_health_check_passes(self):
         """API Gateway health check"""
